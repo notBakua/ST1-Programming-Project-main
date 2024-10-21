@@ -100,15 +100,21 @@ plt.show()
 #Step 9: Statistical feature selection (categorical vs. continuous) using ANOVA test
 import scipy.stats as stats
 
-# Performing ANOVA test for each categorical variable against the target variable (Price)
+# Perform ANOVA tests on each categorical variable against the target variable (Price)
 anova_results = {}
 
+# Loop through each categorical column to perform ANOVA
 for col in categorical_columns:
-    groups = [group['Price'].values for name, group in cleaned_data.groupby(col)]
+    groups = [cleaned_data[cleaned_data[col] == level]['Price'] for level in cleaned_data[col].unique()]
     f_stat, p_value = stats.f_oneway(*groups)
-    anova_results[col] = p_value
+    anova_results[col] = {"F-statistic": f_stat, "p-value": p_value}
 
-print(anova_results)
+# Convert the results to a DataFrame for cleaner display
+anova_results_df = pd.DataFrame(anova_results).T
+
+# Print the ANOVA results as a table
+print("ANOVA Test Results:\n")
+print(anova_results_df.to_string(index=True, float_format="%.6f"))
 
 # P-values for each catagorical variable against Price
 # Brand: 0.2601
@@ -229,22 +235,22 @@ import numpy as np
 
 # Retrain the best model on 100% of the available data
 # Prepare the full dataset
-X_full_scaled = scaler.fit_transform(X)  # Use the scaler to standardize the data
+X_full_scaled = scaler.fit_transform(X) 
 best_model_final = LinearRegression()
 best_model_final.fit(X_full_scaled, y)
 
 # Save the model, scaler, and column names as serialized files
-joblib.dump(best_model_final, 'best_model.pkl')
+joblib.dump(best_model_final, 'model.pkl')
 joblib.dump(scaler, 'scaler.pkl')
-joblib.dump(X.columns, 'X_columns.pkl')
+joblib.dump(X.columns, 'Xcolumns.pkl')
 
 # Define a function for predictions (to integrate with GUI/website)
 def predict_price(inputs):
     try:
         # Load the saved model, scaler, and column names
-        model = joblib.load('best_model.pkl')
+        model = joblib.load('model.pkl')
         scaler = joblib.load('scaler.pkl')
-        X_columns = joblib.load('X_columns.pkl')
+        X_columns = joblib.load('Xcolumns.pkl')
 
         # Initialize a DataFrame with all features set to 0
         input_data = pd.DataFrame(np.zeros((1, len(X_columns))), columns=X_columns)

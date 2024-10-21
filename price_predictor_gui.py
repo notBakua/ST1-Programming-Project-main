@@ -22,7 +22,7 @@ Xcolumns = joblib.load('Xcolumns.pkl')
 # Function to get the correct path for PyInstaller bundled files
 def resource_path(relative_path):
     try:
-        base_path = sys._MEIPASS  # PyInstaller temp directory
+        base_path = sys._MEIPASS
     except AttributeError:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
