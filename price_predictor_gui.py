@@ -1,6 +1,6 @@
 #*******************************
 #Author:
-#u3253248 u3275890 Assessment 3_price_predictor_gui 10/ 03/2024
+#u3253248 u3275890 Assessment 3_price_predictor_gui 20/ 10/2024
 #Programming:
 #*******************************
 
